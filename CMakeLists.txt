@@ -3,7 +3,16 @@ project( mgr-exchange )
 cmake_minimum_required( VERSION 3.6 )
 
 set(isInit on)
-set(BOOST_ROOT "C:/boost_1_64_0/boost_mingw_link_static")
+
+if( ${BOOST_ROOT} NOT STREQUAL )
+    message(STATUS "NOT BOOST ROOT")
+    if(WIN32)
+        set(BOOST_ROOT "C:/boost_1_64_0/boost_mingw_link_static")
+    else(UNIX)
+        set(BOOST_ROOT "/usr/lib/boost_1_66")
+    endif()
+endif()
+
 set(BOOST_DIR ${BOOST_ROOT})
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
@@ -25,6 +34,8 @@ set (SOURCE_FILES src/main.cpp
                   src/asiointerface.h
                   src/argparser.cpp
                   src/argparser.h
+                  src/sharedmemory.cpp
+                  src/sharedmemory.h
     )
 
 #Включение директории Boost
@@ -44,11 +55,30 @@ if( isInit )
     if(WIN32)
         set(DEPENDENCY_LIB ws2_32 wsock32)
     else(UNIX)
+        set(DEPENDENCY_LIB rt pthread )
     endif()
 
     target_link_libraries( ${PROJECT_NAME} ${Boost_LIBRARIES}
-                                           ${DEPENDENCY_LIB}
-                                           -static -static-libgcc -static-libstdc++ )
+        ${DEPENDENCY_LIB} )
+#                                           "/usr/lib/x86_64-linux-gnu/librt.so")
 else()
     message(STATUS "*** ERROR *** Build is down")
+endif()
+
+if(BUILD_UTILITY)
+
+        set (SOURCE_FILES_UTILITY
+                         utility/main.cpp
+            )
+
+        add_executable( shread ${SOURCE_FILES_UTILITY} )
+
+    if(WIN32)
+        set(DEPENDENCY_LIB ws2_32 wsock32)
+    else(UNIX)
+        set(DEPENDENCY_LIB rt)
+    endif()
+
+    target_link_libraries( shread ${Boost_LIBRARIES} )
+#        "/usr/lib/x86_64-linux-gnu/librt.so")
 endif()

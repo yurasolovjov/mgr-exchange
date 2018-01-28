@@ -6,7 +6,7 @@
 #include <memory>
 #include "interface.h"
 #include "asiointerface.h"
-#include "pycomposition.h"
+#include "sharedmemory.h"
 
 static bool isRun = true;
 
@@ -48,54 +48,53 @@ int main(int argc, char** argv)
     bool verbose = args.isVerbose();
     uint8_t     mode = args.getMode();
     uint16_t    frequency = args.getFrequency();
-    uint16_t    inPort;
-    uint16_t    outPort;
-    uint32_t    sizeShmem;
-    std::string modeString;
-    std::string inputIPAddress;
-    std::string outputIPAddress;
-    std::string interface;
+    uint16_t    inPort 	  = args.getInPort();
+    uint16_t    outPort   = args.getOutPort();
+    uint32_t    sizeShmem = args.getSizeShmem();
+    std::string modeString = args.modeName();
+    std::string inputIPAddress = args.inputAddress();
+    std::string outputIPAddress = args.outputAddress();
+    std::string interface = args.getInterface();
 
 
     if( verbose ){
 
         std::cout<<" ============================================================================== "<<std::endl;
-        std::cout<<" *** DEBUG *** Option --path	      = "<<args.getModulePath()<<std::endl;
-        std::cout<<" *** DEBUG *** Option --interface     = "<<args.getInterface()<<std::endl;
-        std::cout<<" *** DEBUG *** Option --frequency     = "<<args.getFrequency()<<std::endl;
-        std::cout<<" *** DEBUG *** Option --port          = "<<args.getPort()<<std::endl;
-        std::cout<<" *** DEBUG *** Option --size_buffer   = "<<args.getSizeBuffer()<<std::endl;
-        std::cout<<" *** DEBUG *** Option --module        = "<<args.getModule()<<std::endl;
         std::cout<<" *** DEBUG *** Option --verbose       = "<<(verbose ? "true" : "false" )<<std::endl;
+        std::cout<<" *** DEBUG *** Option --mode	      = "<<modeString<<std::endl;
+        std::cout<<" *** DEBUG *** Option --frequency     = "<<frequency<<std::endl;
+        std::cout<<" *** DEBUG *** Option --inPort        = "<<inPort<<std::endl;
+        std::cout<<" *** DEBUG *** Option --outPort       = "<<outPort<<std::endl;
+        std::cout<<" *** DEBUG *** Option --sizeShmem     = "<<sizeShmem<<std::endl;
+        std::cout<<" *** DEBUG *** Option --inIPAddress	  = "<<inputIPAddress<<std::endl;
+        std::cout<<" *** DEBUG *** Option --outIPAddress  = "<<outputIPAddress<<std::endl;
+        std::cout<<" *** DEBUG *** Option --interface     = "<<interface<<std::endl;
         std::cout<<" ============================================================================== "<<std::endl;
         std::cout<<std::endl;
     }
 
+    /**/
+    switch(mode){
+        case MODE_LOCAL:
+        break;
+        case MODE_NET_1:
+           // std::unique_ptr<Interface> intr = Interface::CreateInterface();
+        break;
+        case MODE_NET_2:
+        break;
+        case MODE_NET_3:
+        break;
+    }
 
-    std::string libraryPath = args.getModulePath();
-    std::string module = args.getModule();
-    PyComposition pc(libraryPath, module);
-    tuple_t arg;
-    std::vector<double> a,b;
-    a.push_back(1.0);
-    a.push_back(2.0);
-    a.push_back(3.0);
-    a.push_back(4.0);
-    a.push_back(5.0);
-    a.push_back(6.0);
 
-    b = a;
+    SharedMemory shm;
 
-    arg.push_back(a);
-    arg.push_back(b);
 
-    pc.setArgs(arg);
+    while (isRun) {
 
-    pc.CallPythonFunction(static_cast<std::string>("func3"), NULL, NULL);
+        std::this_thread::sleep_for(std::chrono::milliseconds(25));
+    }
 
-    std::unique_ptr<Interface> net = Interface::CreateInterface();
-
-    //std::this_thread::sleep_for(std::chrono::milliseconds(frequency));
 
     return 0;
 }

@@ -12,7 +12,7 @@ ArgParser::ArgParser(int argc, char** argv){
 
     desc.add_options()
            ("help,h","help \n")
-           ("mode,m",po::value<std::string>(),"Mode of work")
+           ("mode,m",po::value<std::string>()->default_value(MODE_DEFINE),"Mode of work")
            ("size,s",po::value<uint32_t>()->default_value(SIZE_SHARED_MEMORY),"Size of shared memory")
            ("frequency,f",po::value<int>()->default_value(FREQUENCY),"Frequency of the program")
            ("interface,s",po::value<std::string>()->default_value("udp"),"Interface of net")
@@ -43,16 +43,16 @@ ArgParser::ArgParser(int argc, char** argv){
     if(vm.count("mode")){
         this->_modeString = vm["mode"].as<std::string>();
 
-        if( _modeString == MODE_LOCAL){
+        if( _modeString == "local"){
             this->_mode = MODE_LOCAL;
         }
-        else if(_modeString == MODE_NET_1){
+        else if(_modeString == "net_1"){
             this->_mode = MODE_NET_1;
         }
-        else if(_modeString == MODE_NET_2){
+        else if(_modeString == "net_2"){
             this->_mode = MODE_NET_2;
         }
-        else if(_modeString == MODE_NET_3){
+        else if(_modeString == "net_3"){
             this->_mode = MODE_NET_3;
         }
     }

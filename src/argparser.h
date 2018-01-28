@@ -6,6 +6,7 @@
 
 namespace po = boost::program_options;
 
+#define MODE_DEFINE	"local"
 #define SIZE_SHARED_MEMORY 65535
 #define FREQUENCY  0
 #define IN_PORT  45451
