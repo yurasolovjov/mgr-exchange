@@ -25,9 +25,18 @@ int main(int argc, char** argv)
     res = segment.find<MyType> ("MyType instance");
 
     //Length should be 1
-    std::cout<<" first: "<<res.first->first<<" second: "<<res.first->second<<std::endl;
+    if(res.second == 1){
+        std::cout<<" first: "<<res.first->first<<" second: "<<res.first->second<<std::endl;
+    }
+    else std::cout<<" Not found"<<std::endl;
+
+    res = segment.find<MyType> ("asd");
+
+    if(res.second == 1){
+        std::cout<<" first: "<<res.first->first<<" second: "<<res.first->second<<std::endl;
+    }
+    else std::cout<<" Not found"<<std::endl;
 return 0;
-    if(res.second != 1) return 1;
 
     /*
     //Find the array constructed from iterators

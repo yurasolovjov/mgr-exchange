@@ -3,11 +3,19 @@
 SharedMemory::SharedMemory()
 {
 
+    segment = std::make_unique<managed_shared_memory>(create_only,"MySharedMemory",65565);
+    std::string ssss = "asd";
+    MyType a(100.0,0);
+    this->registrated<MyType>("asd",a);
+//    MyType *instance = segment.get()->construct<MyType>("MyType instance")(100.0, 20);
+
+    /*
     managed_shared_memory segment(create_only, "MySharedMemory", 65536);
 
     MyType *instance = segment.construct<MyType>
             ("MyType instance")  //name of the object
             (100.0, 20);            //ctor first argument
+            */
     /*
          //Create an array of 10 elements of MyType initialized to {0.0, 0}
          MyType *array = segment.construct<MyType>
@@ -34,4 +42,13 @@ SharedMemory::~SharedMemory(){
         shm_remove() { shared_memory_object::remove("MySharedMemory"); }
         ~shm_remove(){ shared_memory_object::remove("MySharedMemory"); }
      } remover;
+}
+
+template<typename T, typename... Args>
+bool SharedMemory::registrated(std::string  name, Args& ...args){
+
+    if(!name.empty()){
+        segment.get()->construct<T>(name.c_str())(args...);
+      //  segment.get()->construct<T>(name.c_str())();
+    }
 }
