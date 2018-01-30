@@ -12,7 +12,15 @@ int main(int argc, char** argv)
 {
 
     std::cout<<"shread <<<<<<<<<<<<<<<<<<<<<< " <<std::endl;
-        managed_shared_memory segment(open_only, "MySharedMemory");
+    managed_shared_memory segment(open_read_only, "MySharedMemory");
+
+    /* Список имён в РП*/
+
+    for(auto itr = segment.named_begin(); itr != segment.named_end(); ++itr){
+        const managed_shared_memory::char_type *name = itr->name();
+
+        std::cout<<"name object: "<<name<<std::endl;
+    }
 
     std::pair<MyType*, managed_shared_memory::size_type> res;
 
@@ -32,10 +40,17 @@ int main(int argc, char** argv)
 
     res = segment.find<MyType> ("asd");
 
-    if(res.second == 1){
-        std::cout<<" first: "<<res.first->first<<" second: "<<res.first->second<<std::endl;
+    try{
+        if(res.second == 1){
+                std::cout<<" first: "<<res.first->first<<" second: "<<res.first->second<<std::endl;
+        }
+        else std::cout<<" Not found"<<std::endl;
     }
-    else std::cout<<" Not found"<<std::endl;
+    catch(interprocess_exception &ex){
+        std::cout << ex.what() << std::endl;
+        return 1;
+     }
+
 return 0;
 
     /*
