@@ -32,6 +32,7 @@ int main(int argc, char** argv)
     std::string shmem  = "";
     std::string signal = "";
     std::string value  = "";
+    std::string destroy = "";
     bool        operationRead  = false;
     bool        operationWrite = false;
     bool        operationList  = false;
@@ -81,6 +82,10 @@ int main(int argc, char** argv)
         operationList = true;
     }
 
+    if(vm.count("destroy")){
+        destroy = vm["destroy"].as<std::string>();
+    }
+
     try{
 
         managed_shared_memory segment(open_only, shmem.c_str());
@@ -117,6 +122,14 @@ int main(int argc, char** argv)
                 const managed_shared_memory::char_type *name = itr->name();
                 std::cout<<"Signal "<<i<<" : "<<name<<std::endl;
                 i++;
+            }
+        }
+
+        if(!destroy.empty()){
+            bool r = segment.destroy<SignalPairInt>(destroy.c_str());
+
+            if( r ){
+                std::cout<<"*** SIGNAL: "<<destroy<<" has been destroyed"<<std::endl;
             }
         }
     }
