@@ -7,30 +7,33 @@
 #include <map>
 #include <set>
 
-/** @breif произвольный сигнал */
-typedef std::pair<int,int> SignalPairInt;
+namespace ShSignals {
 
-/** @brief Аналоговый сигнал
- *  @param uint16_t - код аналогового сигнала
- *  @param double   - Пересчитаное значение
- */
-typedef std::pair<uint16_t, double> Analog;
+    /** @breif произвольный сигнал */
+    typedef std::pair<int,int> SignalPairInt;
 
-/** @brief Дискретный сигнал
- *  @param bool - значение дискретного сигнала
- */
-typedef bool Discret;
+    /** @brief Аналоговый сигнал
+     *  @param uint16_t - код аналогового сигнала
+     *  @param double   - Пересчитаное значение
+     */
+    typedef std::pair<uint16_t, double> Analog;
 
-/** @brief Программный сигнал
- *  @param bool - состояние процесса (true - активен, false - незапущен)
- *  @param map  - Полезные данные запущенного процесса
-*/
-typedef std::pair<bool, std::map<std::string, uint32_t>> Software;
+    /** @brief Дискретный сигнал
+     *  @param bool - значение дискретного сигнала
+     */
+    typedef bool Discret;
 
-/** @brief Аппаратный сигнал
- *  @param bool - состояние устройства (true - активен, false - незапущен)
- *  @param map  - Полезные данные устройства
-*/
-typedef std::pair<bool, std::map<std::string, uint32_t>> Hardware;
+    /** @brief Программный сигнал
+     *  @param bool - состояние процесса (true - активен, false - незапущен)
+     *  @param map  - Полезные данные запущенного процесса
+    */
+    typedef std::pair<bool, std::map<std::string, uint32_t>> Software;
+
+    /** @brief Аппаратный сигнал
+     *  @param bool - состояние устройства (true - активен, false - незапущен)
+     *  @param map  - Полезные данные устройства
+    */
+    typedef std::pair<bool, std::map<std::string, uint32_t>> Hardware;
+}
 
 #endif // SHSIGNALS_H

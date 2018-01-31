@@ -71,18 +71,12 @@ endif()
 # Сборка утилиты для работы с разделяемой памятью
 if(BUILD_UTILITY)
 
-        set (SOURCE_FILES_UTILITY
-                         utility/main.cpp
-            )
+    set(UTILITY_NAME shctl)
+    set (SOURCE_FILES_UTILITY utility/main.cpp
+                              utility/main.h
+         )
 
-        add_executable( shread ${SOURCE_FILES_UTILITY} )
+    add_executable( ${UTILITY_NAME} ${SOURCE_FILES_UTILITY} )
 
-    if(WIN32)
-        set(DEPENDENCY_LIB ws2_32 wsock32)
-    else(UNIX)
-        set(DEPENDENCY_LIB rt)
-    endif()
-
-    target_link_libraries( shread ${Boost_LIBRARIES} )
-#        "/usr/lib/x86_64-linux-gnu/librt.so")
+    target_link_libraries( ${UTILITY_NAME} ${Boost_LIBRARIES} ${DEPENDENCY_LIB} )
 endif()
