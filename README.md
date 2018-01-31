@@ -9,7 +9,7 @@
 
 
 ### Инструкция по сборке boost 
-1. [скачать boost версии 1.66.0]( http://www.boost.org/user/history/version_1_66_0.html)
+1. [скачать boost версии 1.66.0]( http://www.boost.org/users/history/version_1_66_0.html)
 2. Распаковать скаченный архив командой zcat "архив boost" | tar -xv
 3. Перейти в корневой каталог boost и выполнить список команд:
 3.1 ./bootstrap.sh gcc
