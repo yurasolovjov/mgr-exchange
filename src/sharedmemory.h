@@ -9,8 +9,8 @@
 
 #define BOOST_DATE_TIME_NO_LIB 1;
 
-    using namespace boost::interprocess;
-    typedef std::pair<double, int> MyType;
+using namespace boost::interprocess;
+
 class SharedMemory
 {
 public:

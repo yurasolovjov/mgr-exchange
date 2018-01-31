@@ -4,67 +4,127 @@
 #include <signal.h>
 #include <memory>
 #include <boost/interprocess/managed_shared_memory.hpp>
+#include <boost/program_options.hpp>
+#include "shsignals.h"
 
 using namespace boost::interprocess;
-typedef std::pair<double, int> MyType;
+namespace po = boost::program_options;
 
 int main(int argc, char** argv)
 {
 
-    std::cout<<"shread <<<<<<<<<<<<<<<<<<<<<< " <<std::endl;
-    managed_shared_memory segment(open_read_only, "MySharedMemory");
+    po::options_description desc("The manager exchange \n short description: ");
 
-    /* Список имён в РП*/
+    desc.add_options()
+           ("help,h","help \n")
+           ("shmem,m",    po::value<std::string>(),"Name of shared memory")
+           ("signal,s",   po::value<std::string>(),"Name of signal")
+           ("value,v",    po::value<std::string>(),"Value of signal in shared memory")
+           ("type,t",     po::value<std::string>(),"Type of signal")
+           ("read,r","Operation: read of signal in shared memory")
+           ("write,w","Operation: write of signal in shared memory")
+           ("destroy,d", po::value<std::string>(),"Destroy signal")
+           ("list,l","Show list stored in shared memory")
+    ;
 
-    for(auto itr = segment.named_begin(); itr != segment.named_end(); ++itr){
-        const managed_shared_memory::char_type *name = itr->name();
+    po::variables_map vm;
 
-        std::cout<<"name object: "<<name<<std::endl;
-    }
-
-    std::pair<MyType*, managed_shared_memory::size_type> res;
-
-    //Find the array
-//    res = segment.find<MyType> ("MyType array");
-    //Length should be 10
-  //  if(res.second != 10) return 1;
-
-    //Find the object
-    res = segment.find<MyType> ("MyType instance");
-
-    //Length should be 1
-    if(res.second == 1){
-        std::cout<<" first: "<<res.first->first<<" second: "<<res.first->second<<std::endl;
-    }
-    else std::cout<<" Not found"<<std::endl;
-
-    res = segment.find<MyType> ("asd");
+    std::string shmem  = "";
+    std::string signal = "";
+    std::string value  = "";
+    bool        operationRead  = false;
+    bool        operationWrite = false;
+    bool        operationList  = false;
 
     try{
-        if(res.second == 1){
-                std::cout<<" first: "<<res.first->first<<" second: "<<res.first->second<<std::endl;
-        }
-        else std::cout<<" Not found"<<std::endl;
+          po::store(po::parse_command_line(argc, argv, desc), vm);
+          po::notify(vm);
     }
-    catch(interprocess_exception &ex){
-        std::cout << ex.what() << std::endl;
-        return 1;
-     }
+    catch(po::error& e){
+         std::cerr<<"*** ERROR *** "<<e.what()<<std::endl;
+    }
 
-return 0;
+    if (vm.count("help")){
+          std::cout<<desc<<std::endl;
+    }
 
-    /*
-    //Find the array constructed from iterators
-    res = segment.find<MyType> ("MyType array from it");
-    //Length should be 3
-    if(res.second != 3) return 1;
+    /** Имя разделяемой памяти */
+    if(vm.count("shmem")){
+        shmem = vm["shmem"].as<std::string>();
+    }
+    else{
+        std::cout<<"*** ERROR *** Shared memory name is not set"<<std::endl;
+        return 0;
+    }
+    /** Имя сигнала */
+    if(vm.count("signal")){
+        signal = vm["signal"].as<std::string>();
+    }
 
-    //We're done, delete all the objects
-    segment.destroy<MyType>("MyType instance");
-    segment.destroy<MyType>("MyType array from it");
-    */
-    //std::this_thread::sleep_for(std::chrono::milliseconds(frequency));
+    /** Значение сигнала */
+    if(vm.count("value")){
+        value = vm["value"].as<std::string>();
+    }
 
-    segment.destroy<MyType>("MyType array");
+    /** Типы выполняемых операций над сигналом "Чтение"*/
+    if(vm.count("read")){
+        operationRead = true;
+    }
+
+    /** Типы выполняемых операций над сигналом "Запись"*/
+    if(vm.count("write")){
+        operationWrite = true;
+    }
+
+    /** Отображение сигналов в разделяемой памяти */
+    if(vm.count("list")){
+        operationList = true;
+    }
+
+    try{
+
+        managed_shared_memory segment(open_only, shmem.c_str());
+
+        /** @brief Чтение сигнала из разделяемой памяти */
+        if(!signal.empty() && operationRead){
+            std::pair<SignalPairInt*, managed_shared_memory::size_type> res;
+            res = segment.find<SignalPairInt> (signal.c_str());
+
+            if( res.second == 1){
+                std::cout<<" *** SIGNAL *** "<<signal<<" : "<<res.first->first<<" "<<res.first->second<<std::endl;
+            }
+            else{
+                std::cerr<<"*** SIGNAL: "<<signal<<" *** not found"<<std::endl;
+            }
+        }
+
+        /** @brief Запись сигнала в разделяемую память */
+        if(!signal.empty() && operationWrite){
+            std::pair<SignalPairInt*, managed_shared_memory::size_type> res;
+            res = segment.find<SignalPairInt>(signal.c_str());
+
+            if( res.second == 1){
+                res.first->first = 0.0;
+                res.first->second = 0;
+                std::cout<<" *** SIGNAL *** "<<signal<<" : "<<res.first->first<<" "<<res.first->second<<std::endl;
+            }
+        }
+
+        /* Список имён в РП*/
+        if(operationList){
+            for(auto itr = segment.named_begin(); itr != segment.named_end(); ++itr){
+                static int i = 0;
+                const managed_shared_memory::char_type *name = itr->name();
+                std::cout<<"Signal "<<i<<" : "<<name<<std::endl;
+                i++;
+            }
+        }
+    }
+    catch(interprocess_exception& ex){
+        std::cout<<"*** Exception *** "<<ex.what()<<std::endl;
+        return 0;
+    }
+
+
     return 0;
 }

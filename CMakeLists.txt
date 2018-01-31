@@ -26,6 +26,7 @@ set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_AUTOMOC ON )
 
 include_directories( ${CMAKE_SOURCE_DIR}/src )
+include_directories( ${CMAKE_SOURCE_DIR}/signals )
 
 set (SOURCE_FILES src/main.cpp
                   src/interface.cpp
@@ -36,6 +37,7 @@ set (SOURCE_FILES src/main.cpp
                   src/argparser.h
                   src/sharedmemory.cpp
                   src/sharedmemory.h
+                  signals/shsignals.h
     )
 
 #Включение директории Boost
@@ -59,12 +61,14 @@ if( isInit )
     endif()
 
     target_link_libraries( ${PROJECT_NAME} ${Boost_LIBRARIES}
-        ${DEPENDENCY_LIB} )
+                                           ${DEPENDENCY_LIB} )
 #                                           "/usr/lib/x86_64-linux-gnu/librt.so")
 else()
     message(STATUS "*** ERROR *** Build is down")
 endif()
 
+
+# Сборка утилиты для работы с разделяемой памятью
 if(BUILD_UTILITY)
 
         set (SOURCE_FILES_UTILITY
