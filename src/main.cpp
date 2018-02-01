@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     }
 
 
-    SharedMemory shm;
+    SharedMemory shm("microservice", 1280123);
 
 
     while (isRun) {

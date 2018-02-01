@@ -1,5 +1,4 @@
 #include <shmem-api.hpp>
-
 #include <iostream>
 #include <cstring>
 #include <argparser.h>
@@ -10,6 +9,7 @@
 
 using namespace boost::interprocess;
 namespace po = boost::program_options;
+
 int main(int argc, char** argv)
 {
 

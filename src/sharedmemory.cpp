@@ -1,47 +1,26 @@
 #include "sharedmemory.h"
-#include "signals/shsignals.h"
+#include "shmem-api.hpp"
 
-SharedMemory::SharedMemory()
+SharedMemory::SharedMemory( std::string name, uint32_t size )
 {
 
-    segment = std::make_unique<managed_shared_memory>(open_or_create,"MySharedMemory",65565);
-    std::string ssss = "asd";
+
+   _segment = ShSignals::created(name, size);
     ShSignals::SignalPairInt a(100, 1000);
+    ShSignals::Analog d(100, 1000.1);
 
-    this->registrated<ShSignals::SignalPairInt>("signal1",a);
-    this->registrated<ShSignals::SignalPairInt>("signal2",a);
-    this->registrated<ShSignals::SignalPairInt>("signal3",a);
-    this->registrated<ShSignals::SignalPairInt>("signal4",a);
-    this->registrated<ShSignals::SignalPairInt>("signal5",a);
-/*
-    */
-//    MyType *instance = segment.get()->construct<MyType>("MyType instance")(100.0, 20);
 
-    /*
-    managed_shared_memory segment(create_only, "MySharedMemory", 65536);
-
-    MyType *instance = segment.construct<MyType>
-            ("MyType instance")  //name of the object
-            (100.0, 20);            //ctor first argument
-            */
-    /*
-         //Create an array of 10 elements of MyType initialized to {0.0, 0}
-         MyType *array = segment.construct<MyType>
-            ("MyType array")     //name of the object
-            [10]                 //number of elements
-            (0.0, 0);            //Same two ctor arguments for all objects
-
-     //Create an array of 3 elements of MyType initializing each one
-     //to a different value {0.0, 0}, {1.0, 1}, {2.0, 2}...
-     float float_initializer[3] = { 0.0, 1.0, 2.0 };
-     int   int_initializer[3]   = { 0, 1, 2 };
-
-     MyType *array_it = segment.construct_it<MyType>
-        ("MyType array from it")   //name of the object
-        [3]                        //number of elements
-        ( &float_initializer[0]    //Iterator for the 1st ctor argument
-        , &int_initializer[0]);    //Iterator for the 2nd ctor argument
-*/
+    ShSignals::write<ShSignals::SignalPairInt>("asd1", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd2", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd3", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd4", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd5", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd6", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd7", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd8", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd9", _segment.get(), a);
+    ShSignals::write<ShSignals::SignalPairInt>("asd10", _segment.get(), a);
+    ShSignals::write<ShSignals::Analog>("asd10", _segment.get(), d);
 }
 
 SharedMemory::~SharedMemory(){
@@ -50,13 +29,4 @@ SharedMemory::~SharedMemory(){
         shm_remove() { shared_memory_object::remove("MySharedMemory"); }
         ~shm_remove(){ shared_memory_object::remove("MySharedMemory"); }
      } remover;
-}
-
-template<typename T, typename... Args>
-bool SharedMemory::registrated(std::string  name, Args& ...args){
-
-    if(!name.empty()){
-        segment.get()->construct<T>(name.c_str())(args...);
-      //  segment.get()->construct<T>(name.c_str())();
-    }
 }

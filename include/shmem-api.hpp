@@ -22,7 +22,6 @@ namespace ShSignals {
 
 
     /** Создание разделяемой памяти*/
-    template<typename T>
     std::unique_ptr<managed_shared_memory> created(std::string shmem, uint32_t size){
 
         if( !shmem.empty() && size > 0){
@@ -101,12 +100,7 @@ namespace ShSignals {
             return false;
         }
 
-        //std::pair<T*, managed_shared_memory::size_type> res;
-
-//        res = segment->find<T>(signal.c_str());
-
         T* obj = segment->find_or_construct<T>(signal.c_str())(value...);
-
 
         if(std::is_same<T,ShSignals::SignalPairInt>::value){
         }

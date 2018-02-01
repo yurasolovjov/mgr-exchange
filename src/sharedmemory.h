@@ -7,23 +7,28 @@
 #include <utility>
 #include <memory>
 
-#define BOOST_DATE_TIME_NO_LIB 1;
 
 using namespace boost::interprocess;
+
+#define DEFAULT_SHMEM_SIZE 1024
 
 class SharedMemory
 {
 public:
-    SharedMemory();
+    explicit SharedMemory( std::string name, uint32_t size = DEFAULT_SHMEM_SIZE);
     ~SharedMemory();
 
-
 public:
-    template<typename T, typename... Args>
-    bool registrated(std::string  name, Args& ...args);
 
 private:
-    std::unique_ptr<managed_shared_memory> segment;
+    /** Структура управления памятью */
+    std::unique_ptr<managed_shared_memory> _segment;
+
+    /** Имя разделяемой памяти */
+    std::string _name;
+
+    /** Размер разделяемой памяти */
+    std::uint32_t _size;
 
 };
 
