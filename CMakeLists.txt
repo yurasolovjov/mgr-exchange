@@ -26,7 +26,7 @@ set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_AUTOMOC ON )
 
 include_directories( ${CMAKE_SOURCE_DIR}/src )
-include_directories( ${CMAKE_SOURCE_DIR}/signals )
+include_directories( ${CMAKE_SOURCE_DIR}/include )
 
 set (SOURCE_FILES src/main.cpp
                   src/interface.cpp
@@ -37,7 +37,8 @@ set (SOURCE_FILES src/main.cpp
                   src/argparser.h
                   src/sharedmemory.cpp
                   src/sharedmemory.h
-                  signals/shsignals.h
+                  include/signals/shsignals.h
+                  include/shmem-api.hpp
     )
 
 #Включение директории Boost
@@ -47,6 +48,7 @@ if (Boost_FOUND)
 else()
     set(isInit off)
 endif()
+
 
 
 #Сборка компонета ПО
@@ -60,8 +62,8 @@ if( isInit )
         set(DEPENDENCY_LIB rt pthread )
     endif()
 
-    target_link_libraries( ${PROJECT_NAME} ${Boost_LIBRARIES}
-                                           ${DEPENDENCY_LIB} )
+    target_link_libraries( ${PROJECT_NAME} ${Boost_LIBRARIES} ${DEPENDENCY_LIB})
+
 #                                           "/usr/lib/x86_64-linux-gnu/librt.so")
 else()
     message(STATUS "*** ERROR *** Build is down")
@@ -71,9 +73,12 @@ endif()
 # Сборка утилиты для работы с разделяемой памятью
 if(BUILD_UTILITY)
 
+    # Имя утилиты для работы с РП
     set(UTILITY_NAME shctl)
+
+    #Исходные коды для сборки утилиты управления РП
     set (SOURCE_FILES_UTILITY utility/main.cpp
-                              utility/main.h
+                              include/shmem-api.hpp
          )
 
     add_executable( ${UTILITY_NAME} ${SOURCE_FILES_UTILITY} )
