@@ -86,6 +86,7 @@ namespace ShSignals {
         }
         else{
         }
+        return true;
     }
 
     /** @brief шаблонная функция записи
@@ -119,6 +120,7 @@ namespace ShSignals {
         }
         else{
         }
+        return true;
     }
 
     /** @brief шаблонная функция обработки сигнала
@@ -133,8 +135,11 @@ namespace ShSignals {
      *  @param segment - управляющая структура памяти
      */
     template<typename T>
-    bool remove(std::string  signal, managed_shared_memory& segment);
-
-
+    bool remove(std::string  signal, managed_shared_memory* segment){
+        if( !signal.empty()){
+            return segment->destroy<T>(signal.c_str());
+        }
+        else return false;
+    }
 }
 #endif // SHMEM_API_H

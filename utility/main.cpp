@@ -21,9 +21,9 @@ int main(int argc, char** argv)
            ("signal,s",   po::value<std::string>(),"Name of signal")
            ("value,v",    po::value<std::string>(),"Value of signal in shared memory")
            ("type,t",     po::value<std::string>(),"Type of signal")
-           ("read,r","Operation: read of signal in shared memory")
-           ("write,w","Operation: write of signal in shared memory")
-           ("destroy,d", po::value<std::string>(),"Destroy signal")
+           ("read,r",   "Operation: read of signal in shared memory")
+           ("write,w",  "Operation: write of signal in shared memory")
+           ("remove,d", "Operation: remove of signal in shared memory")
            ("list,l","Show list stored in shared memory")
     ;
 
@@ -33,10 +33,10 @@ int main(int argc, char** argv)
     std::string shmem  = "";
     std::string signal = "";
     std::string value  = "";
-    std::string destroy = "";
     bool        operationRead  = false;
     bool        operationWrite = false;
     bool        operationList  = false;
+    bool        operationRemove  = false;
 
     try{
           po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -83,8 +83,8 @@ int main(int argc, char** argv)
         operationList = true;
     }
 
-    if(vm.count("destroy")){
-        destroy = vm["destroy"].as<std::string>();
+    if(vm.count("remove")){
+        operationRemove = true;
     }
 
     try{
@@ -107,24 +107,22 @@ int main(int argc, char** argv)
 
         /* Список имён в РП*/
         if(operationList){
-            /*
-            for(auto itr = segment.named_begin(); itr != segment.named_end(); ++itr){
+            for(auto itr = segment.get()->named_begin(); itr != segment.get()->named_end(); ++itr){
                 static int i = 0;
                 const managed_shared_memory::char_type *name = itr->name();
                 std::cout<<"Signal "<<i<<" : "<<name<<std::endl;
+                ShSignals::read<ShSignals::SignalPairInt>(name, segment.get());
                 i++;
             }
-            */
         }
 
-        if(!destroy.empty()){
-//            bool r = segment.destroy<ShSignals::SignalPairInt>(destroy.c_str());
+        if(operationRemove){
 
-            /*
-            if( r ){
-                std::cout<<"*** SIGNAL: "<<destroy<<" has been destroyed"<<std::endl;
+            bool r =ShSignals::remove<ShSignals::SignalPairInt>(signal, segment.get());
+            if(r){
+                std::cout<<"Signal "<<signal<<" has been remove"<<std::endl;
             }
-            */
+
         }
     }
     catch(interprocess_exception& ex){

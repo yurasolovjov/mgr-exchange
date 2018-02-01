@@ -1,19 +1,19 @@
 #include "sharedmemory.h"
-#include "shsignals.h"
+#include "signals/shsignals.h"
 
 SharedMemory::SharedMemory()
 {
 
     segment = std::make_unique<managed_shared_memory>(open_or_create,"MySharedMemory",65565);
-/*
     std::string ssss = "asd";
-    ShSignals::SSignalPairInt a(100, 1000);
+    ShSignals::SignalPairInt a(100, 1000);
 
-    this->registrated<SignalPairInt>("signal1",a);
-    this->registrated<SignalPairInt>("signal2",a);
-    this->registrated<SignalPairInt>("signal3",a);
-    this->registrated<SignalPairInt>("signal4",a);
-    this->registrated<SignalPairInt>("signal5",a);
+    this->registrated<ShSignals::SignalPairInt>("signal1",a);
+    this->registrated<ShSignals::SignalPairInt>("signal2",a);
+    this->registrated<ShSignals::SignalPairInt>("signal3",a);
+    this->registrated<ShSignals::SignalPairInt>("signal4",a);
+    this->registrated<ShSignals::SignalPairInt>("signal5",a);
+/*
     */
 //    MyType *instance = segment.get()->construct<MyType>("MyType instance")(100.0, 20);
 
