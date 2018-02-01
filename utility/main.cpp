@@ -110,8 +110,7 @@ int main(int argc, char** argv)
             for(auto itr = segment.get()->named_begin(); itr != segment.get()->named_end(); ++itr){
                 static int i = 0;
                 const managed_shared_memory::char_type *name = itr->name();
-                std::cout<<"Signal "<<i<<" : "<<name<<std::endl;
-                ShSignals::read<ShSignals::SignalPairInt>(name, segment.get());
+                std::cout<<"[ "<<i<<" ] : "<<name<<std::endl;
                 i++;
             }
         }
