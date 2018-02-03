@@ -6,15 +6,29 @@
 
 #define ASIO_PORT_DEF 45454
 
-class Interface
+/** @brief Абстрактный класс интерфейса ввода данных */
+class InputInterface
 {
 public:
-    Interface();
-    virtual ~Interface(){ std::cout<<"virtual ~interface() "<<std::endl; }
+    InputInterface();
+    virtual ~InputInterface(){ std::cout<<"virtual ~interface() "<<std::endl; }
 
     virtual size_t receive(void* buffer, size_t size) = 0;
     virtual bool isInit() = 0;
-    static std::unique_ptr<Interface> CreateInterface(uint8_t type = 0, uint16_t port = ASIO_PORT_DEF);
+    static std::unique_ptr<InputInterface> CreateInterface(uint8_t type = 0, uint16_t port = ASIO_PORT_DEF);
+
+};
+
+/** @brief Абстрактный класс интерфейса вывода данных*/
+class OutputInterface
+{
+public:
+    OutputInterface();
+    virtual ~OutputInterface(){ std::cout<<"virtual ~interface() "<<std::endl; }
+
+    virtual size_t send(void* buffer, size_t size) = 0;
+    virtual bool isInit() = 0;
+    static std::unique_ptr<OutputInterface> CreateInterface(uint8_t type = 0,std::string address = "", uint16_t port = ASIO_PORT_DEF);
 
 };
 

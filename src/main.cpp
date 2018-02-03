@@ -31,6 +31,7 @@ void signalHandler(int signo) {
     isRun = false;
 }
 
+using boost::asio::ip::udp;
 int main(int argc, char** argv)
 {
 
@@ -74,20 +75,39 @@ int main(int argc, char** argv)
     }
 
     /**/
+
+    if(mode == MODE_NET_1){
+        uint8_t bif[128] = {0};
+        uint16_t si = sizeof(bif);
+        std::unique_ptr<InputInterface> intr = InputInterface::CreateInterface(0,45452);
+        intr.get()->receive(bif,si);
+    }
+    else if(mode == MODE_NET_2){
+        uint8_t bif[128] = {0};
+        std::memset(bif,0xff,sizeof(bif));
+        uint16_t si = sizeof(bif);
+        std::unique_ptr<OutputInterface> intr2 = OutputInterface::CreateInterface(0,inputIPAddress,45452);
+        intr2.get()->send(bif,si);
+    }
+    /*
     switch(mode){
         case MODE_LOCAL:
-        break;
         case MODE_NET_1:
-           // std::unique_ptr<Interface> intr = Interface::CreateInterface();
         break;
         case MODE_NET_2:
         break;
         case MODE_NET_3:
         break;
+        define:
+        break;
+
     }
+*/
 
 
-    SharedMemory shm("microservice", 1280123);
+//    SharedMemory shm("microservice", 1280123);
+
+
 
 
     while (isRun) {
