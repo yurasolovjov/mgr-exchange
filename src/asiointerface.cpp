@@ -33,8 +33,8 @@ bool AsioInputInterface::isInit(){
  *  @return r -  размер принятых данных
 */
 size_t AsioInputInterface::receive(void *buf, size_t size){
-    std::cout<<"receive"<<std::endl;
     size_t r = rsock -> receive_from(buffer(buf, size), senderEp);
+    std::cout<<"receive"<<senderEp.address()<<std::endl;
 
     return r;
 };

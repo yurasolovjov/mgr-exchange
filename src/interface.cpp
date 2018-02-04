@@ -5,6 +5,9 @@
 InputInterface::InputInterface()
 {
 
+    sizeBuffer = 1025;
+    _buffer = std::make_unique<uint8_t[]>(sizeBuffer);
+
 }
 
 /** @brief*/
@@ -27,10 +30,35 @@ std::unique_ptr<InputInterface> InputInterface::CreateInterface(uint8_t type, ui
     return std::move(abstruct);
 }
 
+bool InputInterface::exec(){
+
+    std::thread t1( &InputInterface::receive_loop, this);
+    t1.detach();
+
+    return true;
+
+}
+
+void InputInterface::receive_loop(){
+
+    while(true){
+        int r = this->receive(_buffer.get(), sizeBuffer);
+
+        /*
+        for( int i = 0; i <= r; i++){
+            printf(" %x ", _buffer.get()[i]);
+        }
+        */
+//        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+
+}
 
 /** @brief*/
 OutputInterface::OutputInterface(){
 
+    sizeBuffer = 1025;
+    _buffer = std::make_unique<uint8_t[]>(sizeBuffer);
 }
 
 /** @brief*/
@@ -52,4 +80,26 @@ std::unique_ptr<OutputInterface> OutputInterface::CreateInterface(uint8_t type, 
     }
 
     return std::move(abstruct);
+}
+
+bool OutputInterface::exec(){
+
+    std::thread t1( &OutputInterface::send_loop, this);
+    t1.detach();
+
+    return true;
+
+}
+
+void OutputInterface::send_loop(){
+
+        for( int i = 0; i <= sizeBuffer; i++){
+            _buffer.get()[i] = i;
+        }
+    while(true){
+        int r = this->send(_buffer.get(), sizeBuffer);
+
+//        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+
 }

@@ -77,32 +77,19 @@ int main(int argc, char** argv)
     /**/
 
     if(mode == MODE_NET_1){
-        uint8_t bif[128] = {0};
-        uint16_t si = sizeof(bif);
+
         std::unique_ptr<InputInterface> intr = InputInterface::CreateInterface(0,45452);
-        intr.get()->receive(bif,si);
+        intr.get()->exec();
+
+        while(true){}
     }
     else if(mode == MODE_NET_2){
-        uint8_t bif[128] = {0};
-        std::memset(bif,0xff,sizeof(bif));
-        uint16_t si = sizeof(bif);
-        std::unique_ptr<OutputInterface> intr2 = OutputInterface::CreateInterface(0,inputIPAddress,45452);
-        intr2.get()->send(bif,si);
-    }
-    /*
-    switch(mode){
-        case MODE_LOCAL:
-        case MODE_NET_1:
-        break;
-        case MODE_NET_2:
-        break;
-        case MODE_NET_3:
-        break;
-        define:
-        break;
 
+        std::unique_ptr<OutputInterface> intr2 = OutputInterface::CreateInterface(0,inputIPAddress,45452);
+        intr2.get()->exec();
+        while(true){}
+       // intr2.get()->send(bif,si);
     }
-*/
 
 
 //    SharedMemory shm("microservice", 1280123);
