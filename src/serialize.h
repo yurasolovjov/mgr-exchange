@@ -13,7 +13,9 @@ public:
     ~Serialize();
 
     template< typename T, typename ...Args>
-    void add(std::string& signal, Args& ...value );
+    bool add(std::string signal, Args& ...value );
+
+
     std::unique_ptr<uint8_t[]> get(){ return std::move(_buffer); }
 
 private:

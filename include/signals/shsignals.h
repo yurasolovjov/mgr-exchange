@@ -18,6 +18,11 @@ namespace ShSignals {
      */
     typedef std::pair<uint16_t, double> Analog;
 
+    /** @brief Программно - аналоговый сигнал(без кода АЦП)
+     *  @param double   - Пересчитаное значение
+     */
+    typedef double swAnalog;
+
     /** @brief Дискретный сигнал
      *  @param bool - значение дискретного сигнала
      */

@@ -10,8 +10,9 @@ Serialize::Serialize(uint16_t size)
     else return;
 
     _buffer = std::make_unique<uint8_t[]>(_sizeBuffer);
+    std::memset(_buffer.get(), 0 ,_sizeBuffer);
+    _offset = SIZE_HEADER_SHE;
 
-    _offset = 0;
 }
 
 Serialize::~Serialize(){
@@ -19,19 +20,22 @@ Serialize::~Serialize(){
 }
 
 template< typename T, typename ...Args>
-void Serialize::add(std::string& signal, Args& ...value ){
+bool Serialize::add(std::string signal, Args& ...value ){
+/*
+    if( signal.empty() ) return;
 
     if(std::is_same<T,ShSignals::SignalPairInt>::value){
     }
     else if( std::is_same<T,ShSignals::swAnalog>::value){
 
         ProtocolExchange::TSignal<T> ts(signal);
+//        T v(value...);
+        //ts.setData(v);
 
-        if(!signal.empty()){
-            ts.signalName = signal.c_str();
-        }
+        size_t off = 0;
+        ts.getBuffer(_buffer.get() + _offset, off);
+        _offset += off;
 
-        ts.sizeElement = sizeof(ShSignals::swAnalog);
     }
     else if( std::is_same<T,ShSignals::Analog>::value){
     }
@@ -43,6 +47,5 @@ void Serialize::add(std::string& signal, Args& ...value ){
     }
     else{
     }
-
-
+    */
 }

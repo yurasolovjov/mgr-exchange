@@ -9,6 +9,7 @@
 #include "sharedmemory.h"
 #include "signals/shsignals.h"
 #include "protocol.h"
+#include "serialize.h"
 
 static bool isRun = true;
 
@@ -42,10 +43,27 @@ int main(int argc, char** argv)
     signal(SIGINT,  signalHandler);
 
 
+    Serialize srial;
+    std::string as = "asdf";
+    ShSignals::Analog ass1(9,55.3);
+
+//    srial.add<ShSignals::Analog>(as, ass1);
+
+
+    /*
     ProtocolExchange::TSignal<ShSignals::Analog> ts("asdf");
+    ShSignals::Analog a1(3,9.3);
+    ts.setData(a1);
     uint8_t asdb[255] = {0};
     size_t sz = sizeof(asdb);
     std::cout<<ts.getBuffer(asdb, sz)<<std::endl;
+
+    uint16_t* as1 = reinterpret_cast<uint16_t*>(&asdb[9]);
+    double* as2 = reinterpret_cast<double*>(&asdb[11]);
+    printf(" %x %x %x %x %x %x %x %x \n", asdb[11],asdb[12], asdb[13], asdb[14], asdb[15], asdb[16], asdb[17], asdb[18], asdb[19] );
+    printf("%d %f \n", *as1, *as2);
+    */
+
 
     ArgParser args(argc,argv);
 

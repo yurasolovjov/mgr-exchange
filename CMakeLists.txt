@@ -37,6 +37,9 @@ set (SOURCE_FILES src/main.cpp
                   src/argparser.h
                   src/sharedmemory.cpp
                   src/sharedmemory.h
+                  src/protocol.h
+                  src/serialize.cpp
+                  src/serialize.h
                   include/signals/shsignals.h
                   include/shmem-api.hpp
     )

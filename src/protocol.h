@@ -43,7 +43,9 @@ namespace ProtocolExchange {
         /** @param */
     };
 
-    template<typename T>
+
+
+    template<typename T, typename ...Args>
     struct TSignal{
 
         TSignal(){
@@ -74,6 +76,8 @@ namespace ProtocolExchange {
             }
 
             data = std::make_unique<uint8_t[]>( size );
+
+            std::memset(data.get(), 0, size);
         }
 
         TSignal(std::string signal):TSignal(){
@@ -87,10 +91,39 @@ namespace ProtocolExchange {
             }
         }
 
+        void setData(T value){
+
+            if(std::is_same<T,ShSignals::SignalPairInt>::value){
+            }
+            else if( std::is_same<T,ShSignals::swAnalog>::value){
+            }
+            else if( std::is_same<T,ShSignals::Analog>::value){
+
+                uint8_t offset = 0;
+                uint16_t v1 = value.first;
+                double   v2 = value.second;
+
+                std::memcpy(data.get()+offset, &v1, sizeof(v1));
+                offset += sizeof(ShSignals::Analog::first);
+                std::memcpy(data.get()+offset, &v2, sizeof(v2));
+                offset += sizeof(ShSignals::Analog::second);
+
+            }
+            else if( std::is_same<T,ShSignals::Discret>::value){
+            }
+            else if( std::is_same<T,ShSignals::Hardware>::value){
+            }
+            else if( std::is_same<T,ShSignals::Software>::value){
+            }
+            else{
+            }
+        }
+
+
 
         /** @brief Метод формирования буффера сигнала
-         *  @param buffer - буффер сигнала
-         *  @param size  - размер буффера
+         *  @param  buffer - буффер сигнала
+         *  @param  size  - размер буффера
          *  @return size - размер буффера в случае успеха, и -1 в противном случае.
         */
         size_t getBuffer(void* buffer, size_t& size){
@@ -125,7 +158,7 @@ namespace ProtocolExchange {
 
         /** @param Размер одного элемента сигнала.
          *
-         *  Примечание: первый байт зарезервирован под общий размер элемента
+         *  Примечание: первый байт зарезервирован под общий размер сигнала
          * 	sizeElement[0] - ЗАРЕЗЕРВИРОВАН !
          *
         */
@@ -141,8 +174,7 @@ namespace ProtocolExchange {
 
     };
 
-
-    #define SIZE_HEADER_SHE sizeof(ShmemExchange)
+    #define SIZE_HEADER_SHE sizeof(ProtocolExchange::ShmemExchange)
 }
 
 #endif // PROTOCOL_H
