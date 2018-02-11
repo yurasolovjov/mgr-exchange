@@ -1,5 +1,7 @@
 #include "interface.h"
 #include <asiointerface.h>
+#include <protocol.h>
+
 
 /** @brief*/
 InputInterface::InputInterface()
@@ -43,6 +45,7 @@ void InputInterface::receive_loop(){
 
     while(true){
         int r = this->receive(_buffer.get(), sizeBuffer);
+
 
         /*
         for( int i = 0; i <= r; i++){
@@ -93,9 +96,7 @@ bool OutputInterface::exec(){
 
 void OutputInterface::send_loop(){
 
-        for( int i = 0; i <= sizeBuffer; i++){
-            _buffer.get()[i] = i;
-        }
+
     while(true){
         int r = this->send(_buffer.get(), sizeBuffer);
 

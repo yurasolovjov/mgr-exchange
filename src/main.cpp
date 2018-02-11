@@ -7,12 +7,14 @@
 #include "interface.h"
 #include "asiointerface.h"
 #include "sharedmemory.h"
+#include "signals/shsignals.h"
+#include "protocol.h"
 
 static bool isRun = true;
 
 void signalHandler(int signo) {
 
-    std::cout << "Signal Handler get signal: ";
+    std::cerr << "Signal Handler get signal: ";
 
     switch( signo ) {
         case SIGABRT:
@@ -39,6 +41,11 @@ int main(int argc, char** argv)
     signal(SIGTERM, signalHandler);
     signal(SIGINT,  signalHandler);
 
+
+    ProtocolExchange::TSignal<ShSignals::Analog> ts("asdf");
+    uint8_t asdb[255] = {0};
+    size_t sz = sizeof(asdb);
+    std::cout<<ts.getBuffer(asdb, sz)<<std::endl;
 
     ArgParser args(argc,argv);
 
