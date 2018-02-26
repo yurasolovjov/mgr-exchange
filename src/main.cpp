@@ -43,10 +43,15 @@ int main(int argc, char** argv)
     signal(SIGINT,  signalHandler);
 
 
-    Serialize srial;
-    std::string as = "asdf";
-    ShSignals::Analog ass1(9,55.3);
 
+    ShSignals::Analog as1(0xffff,0.0);
+
+    uint32_t sizep = sizeof(ShSignals::Analog::first) + sizeof(ShSignals::Analog::second);
+
+    Serialize srial;
+    srial << as1;
+
+    srial.print();
 //    srial.add<ShSignals::Analog>(as, ass1);
 
 

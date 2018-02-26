@@ -9,6 +9,8 @@
 
 namespace ShSignals {
 
+#pragma pack(push,1)
+
     /** @breif произвольный сигнал */
     typedef std::pair<int,int> SignalPairInt;
 
@@ -39,6 +41,8 @@ namespace ShSignals {
      *  @param map  - Полезные данные устройства
     */
     typedef std::pair<bool, std::map<std::string, uint32_t>> Hardware;
+
+#pragma pack(pop)
 }
 
 #endif // SHSIGNALS_H

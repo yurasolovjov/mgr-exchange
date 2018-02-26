@@ -6,6 +6,7 @@ Serialize::Serialize(uint16_t size)
 
     if( size > 0){
         _sizeBuffer = size;
+        _limit = size;
     }
     else return;
 
@@ -19,33 +20,13 @@ Serialize::~Serialize(){
 
 }
 
-template< typename T, typename ...Args>
-bool Serialize::add(std::string signal, Args& ...value ){
-/*
-    if( signal.empty() ) return;
+void Serialize::print(){
 
-    if(std::is_same<T,ShSignals::SignalPairInt>::value){
-    }
-    else if( std::is_same<T,ShSignals::swAnalog>::value){
+    if( _buffer.get() != NULL){
 
-        ProtocolExchange::TSignal<T> ts(signal);
-//        T v(value...);
-        //ts.setData(v);
-
-        size_t off = 0;
-        ts.getBuffer(_buffer.get() + _offset, off);
-        _offset += off;
-
+        for(uint8_t i = 0; i < _offset; i++){
+            printf("[%d]:%x ", i,_buffer.get()[i]);
+        }
+        printf("\n");
     }
-    else if( std::is_same<T,ShSignals::Analog>::value){
-    }
-    else if( std::is_same<T,ShSignals::Discret>::value){
-    }
-    else if( std::is_same<T,ShSignals::Hardware>::value){
-    }
-    else if( std::is_same<T,ShSignals::Software>::value){
-    }
-    else{
-    }
-    */
 }

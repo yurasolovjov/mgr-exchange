@@ -12,6 +12,7 @@
 
 namespace ProtocolExchange {
 
+#pragma pack(push,1)
     struct ShmemExchange{
 
         /** @param Уникальное число сигнализирующее начало пакета*/
@@ -43,41 +44,14 @@ namespace ProtocolExchange {
         /** @param */
     };
 
+#pragma pack(pop)
+
 
 
     template<typename T, typename ...Args>
     struct TSignal{
 
         TSignal(){
-            uint16_t size = 0;
-
-            if(std::is_same<T,ShSignals::SignalPairInt>::value){
-            }
-            else if( std::is_same<T,ShSignals::swAnalog>::value){
-                size = sizeof(T);
-            }
-            else if( std::is_same<T,ShSignals::Analog>::value){
-
-                countElements = 1+2;
-                size = sizeof(ShSignals::Analog::first) + sizeof( ShSignals::Analog::second);
-                sizeElement = std::make_unique<uint8_t[]>(countElements);
-
-                sizeElement[1] = sizeof(ShSignals::Analog::first);
-                sizeElement[2] = sizeof(ShSignals::Analog::second);
-                sizeElement[0] = sizeElement[1] + sizeElement[2];
-            }
-            else if( std::is_same<T,ShSignals::Discret>::value){
-            }
-            else if( std::is_same<T,ShSignals::Hardware>::value){
-            }
-            else if( std::is_same<T,ShSignals::Software>::value){
-            }
-            else{
-            }
-
-            data = std::make_unique<uint8_t[]>( size );
-
-            std::memset(data.get(), 0, size);
         }
 
         TSignal(std::string signal):TSignal(){
@@ -98,16 +72,6 @@ namespace ProtocolExchange {
             else if( std::is_same<T,ShSignals::swAnalog>::value){
             }
             else if( std::is_same<T,ShSignals::Analog>::value){
-
-                uint8_t offset = 0;
-                uint16_t v1 = value.first;
-                double   v2 = value.second;
-
-                std::memcpy(data.get()+offset, &v1, sizeof(v1));
-                offset += sizeof(ShSignals::Analog::first);
-                std::memcpy(data.get()+offset, &v2, sizeof(v2));
-                offset += sizeof(ShSignals::Analog::second);
-
             }
             else if( std::is_same<T,ShSignals::Discret>::value){
             }
@@ -119,39 +83,6 @@ namespace ProtocolExchange {
             }
         }
 
-
-
-        /** @brief Метод формирования буффера сигнала
-         *  @param  buffer - буффер сигнала
-         *  @param  size  - размер буффера
-         *  @return size - размер буффера в случае успеха, и -1 в противном случае.
-        */
-        size_t getBuffer(void* buffer, size_t& size){
-
-            uint16_t offset  = 0;
-
-            if(buffer == NULL) return -1;
-
-            /** @param Копироание имени сигнала в буффер*/
-            std::memcpy(buffer + offset, signalName.get(), std::strlen(signalName.get()));
-            offset = std::strlen(signalName.get());
-
-            /** @param коприрование размеры элементов хранящиеся в буффере*/
-            std::memcpy(buffer + offset, sizeElement.get(), sizeElement[0]);
-            offset += countElements;
-
-            /** @param копирование количество элементов в сигнале */
-            std::memcpy(buffer + offset, &countElements, sizeof(countElements));
-            offset += sizeof(countElements);
-
-            /** @param  копирование данных сигнала */
-            if(data.get() != NULL){
-                std::memcpy(buffer + offset, data.get(), sizeElement[0]);
-                offset += sizeElement[0];
-            }
-
-            return size = offset;
-        }
 
         /** @param signalName  - Имя сигнала */
         std::unique_ptr<char>    signalName;
