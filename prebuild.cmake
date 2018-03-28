@@ -1,5 +1,16 @@
 GET_DIRECTORY_PROPERTY( HAS_PARENT PARENT_DIRECT)
 
+#
+# @brief Макрос сборки внешней зависимости boost.(cм. boost.org)
+# @param [in] BOOST_ROOT - Корневой каталог boost
+# @param [in] LIBRARIES  - Список библиотек необходимых к сборке
+#
+# Пример использования макроса сборки библиотек boost:
+#
+# LIST(APPEND libs program_options system)
+# BUILD_BOOST( ${BOOST_ROOT} libs)
+#
+#
 MACRO( BUILD_BOOST BOOST_ROOT LIBRARIES)
 
     set(ExternalBoostRoot ${CMAKE_SOURCE_DIR}/external/boost-1.66.0)
@@ -7,7 +18,8 @@ MACRO( BUILD_BOOST BOOST_ROOT LIBRARIES)
     set(BOOTSTRAP_ARGS gcc)
     set(B2_CMD ${ExternalBoostRoot}/b2.exe)
     set(B2_ARGS_1 "headers")
-    set(B2_ARGS_2 "--build-type=minimal --toolset=gcc --prefix=C:\\boost_1_66_0_local install")
+    set(B2_ARGS_2 "--build-type=minimal --toolset=gcc --prefix=")
+    string(CONCAT B2_ARGS_2 ${BOOST_ROOT} install)
 
 
 
